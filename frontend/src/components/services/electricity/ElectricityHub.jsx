@@ -1,5 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
+import { Outlet } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import Header from '../../common/Header'
 import Footer from '../../common/Footer'
@@ -118,6 +119,8 @@ const ElectricityHub = () => {
             <li>• Track your application status anytime with your application number</li>
           </ul>
         </motion.div>
+      <Outlet />
+
       </main>
 
       <Footer />
