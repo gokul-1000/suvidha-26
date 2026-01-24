@@ -4,5 +4,10 @@
       "source": "/api/:path*",
       "destination": "http://ec2-3-92-147-245.compute-1.amazonaws.com:4000/api/:path*"
     }
+  ],
+  "comments": [
+    "Note: Vercel rewrites do not support environment variable substitution in the destination field.",
+    "The backend URL must be updated manually here when it changes.",
+    "For sensitive URLs, consider using Vercel's Edge Functions or setting up a custom proxy."
   ]
 }
