@@ -185,6 +185,29 @@ model Advisory {
   validTill  DateTime
 }
 
+model Policy {
+  id            String     @id @default(uuid())
+  department    Department
+  title         String
+  description   String
+  category      String?
+  effectiveFrom DateTime?
+  documentUrl   String?
+  createdAt     DateTime   @default(now())
+}
+
+model Tariff {
+  id            String     @id @default(uuid())
+  department    Department
+  name          String
+  description   String?
+  category      String?
+  rate          Float
+  unit          String
+  effectiveFrom DateTime?
+  createdAt     DateTime   @default(now())
+}
+
 model WaterQualityTest {
   id            String            @id @default(uuid())
   citizenId     String

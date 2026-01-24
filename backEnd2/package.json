@@ -8,6 +8,11 @@
     "start": "node src/server.js",
     "prisma:generate": "prisma generate",
     "smoke": "node scripts/smoke-test.js",
+    "seed:schemes": "node scripts/seed-schemes.js",
+    "seed:tariffs": "node scripts/seed-tariffs.js",
+    "seed:policies": "node scripts/seed-policies.js",
+    "seed:advisories": "node scripts/seed-advisories.js",
+    "seed:all": "npm run seed:schemes && npm run seed:tariffs && npm run seed:policies && npm run seed:advisories",
     "admin:create": "node scripts/create-admin.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

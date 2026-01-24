@@ -48,6 +48,229 @@ router.get("/dashboard/summary", async (_req, res, next) => {
     next(error);
   }
 });
+// ==================== POLICIES CRUD ====================
+router.get("/policies", async (_req, res, next) => {
+  try {
+    const policies = await prisma.policy.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+    res.json(policies);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/policies", async (req, res, next) => {
+  try {
+    const {
+      department,
+      title,
+      description,
+      category,
+      effectiveFrom,
+      documentUrl,
+    } = req.body;
+
+    if (!department || !title || !description) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const policy = await prisma.policy.create({
+      data: {
+        department,
+        title,
+        description,
+        category: category || null,
+        effectiveFrom: effectiveFrom ? new Date(effectiveFrom) : null,
+        documentUrl: documentUrl || null,
+      },
+    });
+
+    await logAudit({
+      actorType: "ADMIN",
+      actorId: req.admin.id,
+      action: "POLICY_CREATED",
+      metadata: { policyId: policy.id },
+    });
+
+    res.status(201).json(policy);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.patch("/policies/:policyId", async (req, res, next) => {
+  try {
+    const { title, description, category, effectiveFrom, documentUrl } =
+      req.body;
+
+    const policy = await prisma.policy.update({
+      where: { id: req.params.policyId },
+      data: {
+        title: title || undefined,
+        description: description || undefined,
+        category: category !== undefined ? category : undefined,
+        effectiveFrom: effectiveFrom ? new Date(effectiveFrom) : undefined,
+        documentUrl: documentUrl !== undefined ? documentUrl : undefined,
+      },
+    });
+
+    await logAudit({
+      actorType: "ADMIN",
+      actorId: req.admin.id,
+      action: "POLICY_UPDATED",
+      metadata: { policyId: policy.id },
+    });
+
+    res.json(policy);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete("/policies/:policyId", async (req, res, next) => {
+  try {
+    await prisma.policy.delete({
+      where: { id: req.params.policyId },
+    });
+
+    await logAudit({
+      actorType: "ADMIN",
+      actorId: req.admin.id,
+      action: "POLICY_DELETED",
+      metadata: { policyId: req.params.policyId },
+    });
+
+    res.json({ message: "Policy deleted" });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ==================== TARIFFS CRUD ====================
+router.get("/tariffs", async (_req, res, next) => {
+  try {
+    const tariffs = await prisma.tariff.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+    res.json(tariffs);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/tariffs", async (req, res, next) => {
+  try {
+    const {
+      department,
+      name,
+      description,
+      category,
+      rate,
+      unit,
+      effectiveFrom,
+    } = req.body;
+
+    if (!department || !name || !rate || !unit) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const tariff = await prisma.tariff.create({
+      data: {
+        department,
+        name,
+        description: description || null,
+        category: category || null,
+        rate: parseFloat(rate),
+        unit,
+        effectiveFrom: effectiveFrom ? new Date(effectiveFrom) : null,
+      },
+    });
+
+    await logAudit({
+      actorType: "ADMIN",
+      actorId: req.admin.id,
+      action: "TARIFF_CREATED",
+      metadata: { tariffId: tariff.id },
+    });
+
+    res.status(201).json(tariff);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.patch("/tariffs/:tariffId", async (req, res, next) => {
+  try {
+    const { name, description, category, rate, unit, effectiveFrom } = req.body;
+
+    const tariff = await prisma.tariff.update({
+      where: { id: req.params.tariffId },
+      data: {
+        name: name || undefined,
+        description: description !== undefined ? description : undefined,
+        category: category !== undefined ? category : undefined,
+        rate: rate ? parseFloat(rate) : undefined,
+        unit: unit || undefined,
+        effectiveFrom: effectiveFrom ? new Date(effectiveFrom) : undefined,
+      },
+    });
+
+    await logAudit({
+      actorType: "ADMIN",
+      actorId: req.admin.id,
+      action: "TARIFF_UPDATED",
+      metadata: { tariffId: tariff.id },
+    });
+
+    res.json(tariff);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete("/tariffs/:tariffId", async (req, res, next) => {
+  try {
+    await prisma.tariff.delete({
+      where: { id: req.params.tariffId },
+    });
+
+    await logAudit({
+      actorType: "ADMIN",
+      actorId: req.admin.id,
+      action: "TARIFF_DELETED",
+      metadata: { tariffId: req.params.tariffId },
+    });
+
+    res.json({ message: "Tariff deleted" });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// GET all advisories
+router.get("/advisories", async (_req, res, next) => {
+  try {
+    const advisories = await prisma.advisory.findMany({
+      orderBy: { validTill: "desc" },
+    });
+    res.json(advisories);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// GET all schemes
+router.get("/schemes", async (_req, res, next) => {
+  try {
+    const schemes = await prisma.publicScheme.findMany({
+      orderBy: { title: "asc" },
+    });
+    res.json(schemes);
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.get("/dashboard/kiosk-usage", async (_req, res, next) => {
   try {

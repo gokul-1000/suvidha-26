@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
+import { usePublicData } from "../hooks/usePublicData";
 import {
   Accessibility,
   BadgePercent,
@@ -32,22 +33,30 @@ const AttractScreen = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const schemes = useMemo(
+  const fallbackSchemes = useMemo(
     () => [
       { title: t("pmKusum"), detail: t("pmKusumDetail") },
       { title: t("digitalIndia"), detail: t("digitalIndiaDetail") },
       { title: t("jalJeevan"), detail: t("jalJeevanDetail") },
       { title: t("ayushmanBharat"), detail: t("ayushmanBharatDetail") },
     ],
-    [language, t]
+    [language, t],
   );
+
+  const { schemes, loading: schemesLoading } = usePublicData();
+  const displaySchemes = useMemo(() => {
+    if (Array.isArray(schemes) && schemes.length) {
+      return schemes.map((s) => ({ title: s.title, detail: s.description }));
+    }
+    return fallbackSchemes;
+  }, [schemes, fallbackSchemes]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setSchemeIndex((prev) => (prev + 1) % schemes.length);
+      setSchemeIndex((prev) => (prev + 1) % displaySchemes.length);
     }, 60000);
     return () => clearInterval(interval);
-  }, [schemes.length]);
+  }, [displaySchemes.length]);
 
   const startSession = () => navigate("/language");
   const goToAccessibility = () => navigate("/accessibility");
@@ -149,7 +158,7 @@ const AttractScreen = () => {
     },
   ];
 
-  const currentScheme = schemes[schemeIndex];
+  const currentScheme = displaySchemes[schemeIndex];
   const textScaleClasses = {
     default: "text-base",
     large: "text-lg",
@@ -199,8 +208,8 @@ const AttractScreen = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-primary/80 to-primary-hover/80" />
       </div>
 
-      <div className="relative z-10 mx-auto flex h-full w-full max-w-6xl flex-col gap-4 px-4 py-4 md:px-8">
-        <div className="grid flex-1 gap-4 overflow-hidden xl:grid-cols-[0.35fr_0.65fr]">
+      <div className="relative z-10 mx-auto flex h-full w-full max-w-7xl flex-col gap-5 px-5 py-6 md:px-10">
+        <div className="grid flex-1 gap-5 overflow-hidden xl:grid-cols-[0.32fr_0.68fr]">
           <section className="flex flex-col gap-4 rounded-[28px] border border-white/10 bg-white/10 p-4 shadow-2xl backdrop-blur">
             <div className="grid gap-4">
               {stats.map((stat) => {
@@ -345,7 +354,7 @@ const AttractScreen = () => {
           </section>
 
           <section className="flex flex-col rounded-[28px] border border-white/10 bg-white/10 p-4 shadow-2xl backdrop-blur">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <p
                   className="text-base font-semibold uppercase tracking-[0.45em] text-white/80"
@@ -363,7 +372,7 @@ const AttractScreen = () => {
               <button
                 type="button"
                 onClick={startSession}
-                className="inline-flex items-center justify-center rounded-full border border-white/25 bg-white/15 px-5 py-2 text-sm font-semibold text-white transition hover:bg-white/25"
+                className="inline-flex items-center justify-center rounded-full border border-white/25 bg-white/20 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-white/30 shadow-lg"
               >
                 {t("touchToStart")}
               </button>
@@ -404,7 +413,7 @@ const AttractScreen = () => {
               </div>
             </div>
 
-            <div className="mt-4 grid flex-1 grid-cols-2 gap-3 xl:grid-cols-2">
+            <div className="mt-5 grid flex-1 grid-cols-2 gap-4 xl:grid-cols-2">
               {serviceTiles.map((tile) => {
                 const Icon = tile.icon;
                 return (
@@ -412,22 +421,22 @@ const AttractScreen = () => {
                     type="button"
                     key={tile.key}
                     onClick={() => handleTileSelect(tile.key)}
-                    className="group flex h-full flex-col rounded-3xl border border-white/10 bg-black/20 p-3 text-left transition hover:border-white/40"
+                    className="group flex h-full min-h-[150px] flex-col rounded-3xl border border-white/10 bg-black/25 p-4 text-left transition hover:border-white/40 hover:-translate-y-0.5"
                   >
                     <div
-                      className={`inline-flex rounded-2xl bg-gradient-to-br ${tile.accent} p-2.5 text-white shadow-lg`}
+                      className={`inline-flex rounded-2xl bg-gradient-to-br ${tile.accent} p-3 text-white shadow-lg`}
                     >
                       <Icon className="h-6 w-6" />
                     </div>
                     <p
-                      className="mt-2 text-base font-semibold text-white"
-                      style={{ fontSize: getScaledFontSize(1) }}
+                      className="mt-3 text-lg font-semibold text-white"
+                      style={{ fontSize: getScaledFontSize(1.1) }}
                     >
                       {tile.label}
                     </p>
                     <p
-                      className="mt-1 text-xs text-white/75"
-                      style={{ fontSize: getScaledFontSize(0.75) }}
+                      className="mt-1 text-sm text-white/75"
+                      style={{ fontSize: getScaledFontSize(0.9) }}
                     >
                       {tile.description}
                     </p>

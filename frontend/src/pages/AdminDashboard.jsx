@@ -270,11 +270,41 @@ const AdminDashboard = () => {
       <Header />
 
       <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-800">Admin Dashboard</h1>
-          <p className="text-gray-600">
-            Signed in as {user?.fullName || user?.email}
-          </p>
+        <div className="mb-8 flex items-start justify-between">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-800">
+              Admin Dashboard
+            </h1>
+            <p className="text-gray-600">
+              Signed in as {user?.fullName || user?.email}
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <button
+              className="gov-button-secondary"
+              onClick={() => navigate("/admin/schemes")}
+            >
+              Manage Schemes
+            </button>
+            <button
+              className="gov-button-secondary"
+              onClick={() => navigate("/admin/advisories")}
+            >
+              Manage Advisories
+            </button>
+            <button
+              className="gov-button-secondary"
+              onClick={() => navigate("/admin/policies")}
+            >
+              Manage Policies
+            </button>
+            <button
+              className="gov-button-secondary"
+              onClick={() => navigate("/admin/tariffs")}
+            >
+              Manage Tariffs
+            </button>
+          </div>
         </div>
 
         {loading ? (
@@ -330,10 +360,10 @@ const AdminDashboard = () => {
                             app.status === "APPROVED"
                               ? "bg-green-100 text-green-700"
                               : app.status === "REJECTED"
-                              ? "bg-red-100 text-red-700"
-                              : app.status === "UNDER_PROCESS"
-                              ? "bg-blue-100 text-blue-700"
-                              : "bg-yellow-100 text-yellow-700"
+                                ? "bg-red-100 text-red-700"
+                                : app.status === "UNDER_PROCESS"
+                                  ? "bg-blue-100 text-blue-700"
+                                  : "bg-yellow-100 text-yellow-700"
                           }`}
                         >
                           {app.status}
@@ -382,10 +412,10 @@ const AdminDashboard = () => {
                             grievance.status === "COMPLETED"
                               ? "bg-green-100 text-green-700"
                               : grievance.status === "REJECTED"
-                              ? "bg-red-100 text-red-700"
-                              : grievance.status === "UNDER_PROCESS"
-                              ? "bg-blue-100 text-blue-700"
-                              : "bg-yellow-100 text-yellow-700"
+                                ? "bg-red-100 text-red-700"
+                                : grievance.status === "UNDER_PROCESS"
+                                  ? "bg-blue-100 text-blue-700"
+                                  : "bg-yellow-100 text-yellow-700"
                           }`}
                         >
                           {grievance.status}
@@ -900,7 +930,7 @@ const AdminDashboard = () => {
                     <p className="text-sm text-gray-600">Submitted At</p>
                     <p className="font-semibold">
                       {new Date(
-                        selectedApplication.submittedAt
+                        selectedApplication.submittedAt,
                       ).toLocaleDateString()}
                     </p>
                   </div>
@@ -1017,7 +1047,7 @@ const AdminDashboard = () => {
                     <p className="text-sm text-gray-600">Created At</p>
                     <p className="font-semibold">
                       {new Date(
-                        selectedGrievance.createdAt
+                        selectedGrievance.createdAt,
                       ).toLocaleDateString()}
                     </p>
                   </div>

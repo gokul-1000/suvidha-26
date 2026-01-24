@@ -38,7 +38,7 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 // Response interceptor for error handling
@@ -57,7 +57,7 @@ api.interceptors.response.use(
       }
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 // ============================================
@@ -204,7 +204,7 @@ export const publicAPI = {
   getApplicationStatus: async (applicationId) => {
     try {
       const response = await api.get(
-        `/public/status/application/${applicationId}`
+        `/public/status/application/${applicationId}`,
       );
       return response.data;
     } catch (error) {
@@ -259,7 +259,7 @@ export const applicationsAPI = {
         const response = await api.post(
           `/applications/${applicationId}/documents`,
           fileOrUrl,
-          { headers: { "Content-Type": "multipart/form-data" } }
+          { headers: { "Content-Type": "multipart/form-data" } },
         );
         return response.data;
       }
@@ -268,7 +268,7 @@ export const applicationsAPI = {
         `/applications/${applicationId}/documents`,
         {
           fileUrl: fileOrUrl,
-        }
+        },
       );
       return response.data;
     } catch (error) {
@@ -397,7 +397,7 @@ export const grievancesAPI = {
         const response = await api.post(
           `/grievances/${grievanceId}/documents`,
           fileOrUrl,
-          { headers: { "Content-Type": "multipart/form-data" } }
+          { headers: { "Content-Type": "multipart/form-data" } },
         );
         return response.data;
       }
@@ -560,6 +560,72 @@ export const adminAPI = {
       throw error.response?.data || error;
     }
   },
+  // Policies
+  getPolicies: async () => {
+    try {
+      const response = await api.get("/admin/policies");
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+  createPolicy: async (payload) => {
+    try {
+      const response = await api.post("/admin/policies", payload);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+  updatePolicy: async (id, payload) => {
+    try {
+      const response = await api.patch(`/admin/policies/${id}`, payload);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+  deletePolicy: async (id) => {
+    try {
+      const response = await api.delete(`/admin/policies/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+  // Tariffs
+  getTariffs: async () => {
+    try {
+      const response = await api.get("/admin/tariffs");
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+  createTariff: async (payload) => {
+    try {
+      const response = await api.post("/admin/tariffs", payload);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+  updateTariff: async (id, payload) => {
+    try {
+      const response = await api.patch(`/admin/tariffs/${id}`, payload);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+  deleteTariff: async (id) => {
+    try {
+      const response = await api.delete(`/admin/tariffs/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
   listCitizens: async () => {
     try {
       const response = await api.get("/admin/citizens");
@@ -643,6 +709,38 @@ export const adminAPI = {
   createTestData: async (payload) => {
     try {
       const response = await api.post("/admin/test-data", payload);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+};
+
+// Water Quality Tests API (Special Routes)
+export const waterQualityAPI = {
+  create: async (sampleAddress) => {
+    try {
+      const response = await api.post("/special/water-quality-tests", {
+        sampleAddress,
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+  getTest: async (testId) => {
+    try {
+      const response = await api.get(`/special/water-quality-tests/${testId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+  getReport: async (testId) => {
+    try {
+      const response = await api.get(
+        `/special/water-quality-tests/${testId}/report`,
+      );
       return response.data;
     } catch (error) {
       throw error.response?.data || error;
